@@ -1,0 +1,30 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if a real .env file was committed
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$'; then
+            echo "A .env file is tracked by git. Remove it and change those passwords."
+            exit 1
+          fi
+
+      - name: Lint YAML files
+        run: |
+          pip install --quiet yamllint
+          yamllint -d relaxed .
+
+      - name: Validate compose files
+        run: |
+          for f in stacks/*/compose.yml; do
+            echo "Checking $f"
+            docker compose -f "$f" config --quiet
+          done

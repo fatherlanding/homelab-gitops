@@ -1,0 +1,15 @@
+# Secrets: real values stay on the server, never in git
+.env
+*.env
+!.env.example
+
+# Backups and database dumps
+backups/
+*.sql
+*.sql.gz
+*.dump
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
