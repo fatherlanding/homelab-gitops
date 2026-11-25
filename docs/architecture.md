@@ -5,9 +5,9 @@
 | Item | Value |
 |---|---|
 | Machine | Old laptop (model to record) |
-| CPU / RAM / storage | To record |
-| OS | CasaOS on Linux (distro to record) |
-| Network | Home LAN, fixed IP reservation (to set up) |
+| CPU / RAM / storage | 8 threads, 10 GB RAM + 4 GB swap, 512 GB NVMe SSD (Micron 2200V) |
+| OS | Ubuntu 26.04.1 LTS with CasaOS |
+| Network | Wired Ethernet to a TP-Link Deco mesh node; fixed IP via Deco address reservation (done) |
 
 ## Services and ports
 
@@ -15,7 +15,7 @@
 |---|---|---|---|
 | MariaDB | databases | 3306 | Home LAN only |
 | PostgreSQL | databases | 5432 | Home LAN only |
-| Adminer | databases | To decide | Home LAN only |
+| Adminer | databases | 8080 | Home LAN only |
 | Portainer | CasaOS app | To record | Home LAN only |
 | Jellyfin | media | 8096 | Home LAN only |
 

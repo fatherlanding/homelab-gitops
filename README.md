@@ -12,7 +12,7 @@ _Diagram coming in Phase 7. See [docs/architecture.md](docs/architecture.md)._
 
 | Stack | Services | Folder | Status |
 |---|---|---|---|
-| Databases | MariaDB, PostgreSQL, Adminer | [stacks/databases](stacks/databases) | Planned (Phase 1) |
+| Databases | MariaDB 12.3, PostgreSQL 17, Adminer | [stacks/databases](stacks/databases) | Ready to deploy ([runbook](docs/runbooks/deploy-database-stack.md)) |
 | Monitoring | Uptime Kuma, Grafana, Prometheus | [stacks/monitoring](stacks/monitoring) | Planned (Phase 4) |
 | Media | Jellyfin | [stacks/media](stacks/media) | Planned |
 
@@ -28,7 +28,7 @@ docs/          architecture, runbooks, decision records
 
 ## How to deploy
 
-_Written in Phase 2._
+Each stack has its own folder with a `compose.yml` and a `.env.example`. On the server: copy `.env.example` to `.env`, fill in real values, then run `docker compose up -d` in that folder. Step-by-step: [deploy the database stack](docs/runbooks/deploy-database-stack.md). Deploying straight from GitHub through Portainer comes in Phase 2.
 
 ## Backups and recovery
 
@@ -42,7 +42,8 @@ _Written in Phase 5._
 ## Roadmap
 
 - [x] Phase 0: Repository structure
-- [ ] Phase 0: SSH key login, fixed IP reservation
+- [x] Phase 0: SSH key login
+- [x] Phase 0: Fixed IP reservation
 - [ ] Phase 1: Database stack in Docker Compose
 - [ ] Phase 2: Deploy from GitHub via Portainer stacks
 - [ ] Phase 3: CI checks (compose validation, YAML lint, secret scan)

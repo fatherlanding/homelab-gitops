@@ -1,3 +1,68 @@
 # Database stack: MariaDB, PostgreSQL, Adminer
-# Filled in during Phase 1 (services as code).
-services: {}
+#
+# Deploy (on the server):  cd stacks/databases && docker compose up -d
+# Secrets come from stacks/databases/.env, which is never committed.
+# Runbook: docs/runbooks/deploy-database-stack.md
+
+name: databases
+
+services:
+  mariadb:
+    image: mariadb:12.3          # LTS release line (GA May 2026)
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?set MARIADB_ROOT_PASSWORD in .env}
+      MARIADB_DATABASE: olist
+      MARIADB_USER: ${MARIADB_USER:?set MARIADB_USER in .env}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:?set MARIADB_PASSWORD in .env}
+      TZ: Asia/Kuala_Lumpur
+    ports:
+      - "3306:3306"              # home LAN only; never forward on the router
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    mem_limit: 2g
+
+  postgres:
+    image: postgres:17           # 18 changed the data folder layout; stay on 17 for now
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: practice
+      TZ: Asia/Kuala_Lumpur
+    ports:
+      - "5432:5432"              # home LAN only
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d practice"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    mem_limit: 1g
+
+  adminer:
+    image: adminer:5
+    container_name: adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb   # containers find each other by name
+    ports:
+      - "8080:8080"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    mem_limit: 256m
+
+volumes:
+  mariadb-data:
+  postgres-data:
